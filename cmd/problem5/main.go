@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
-	"os"
 	"strings"
+
+	"github.com/dhawth/advent-of-go-2020/lib"
 )
 
 const (
@@ -23,7 +23,11 @@ func main() {
 		down: 1,
 	}
 
-	lines := getTheStuff()
+	lines, err := lib.ReadFile(inputFile)
+	if err != nil {
+		log.Fatalf("error reading file: %v", err)
+	}
+
 	var trees int
 	var x, y int
 
@@ -50,30 +54,4 @@ func growString(s string, minLength int) []rune {
 	// 2000 / 15 = 133.33 =~ 134 times.
 	n := minLength / len(s) + 1
 	return []rune(strings.Repeat(s, n))
-}
-
-func getTheStuff() []string {
-	f, err := os.Open(inputFile)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-
-	defer func() {
-		_ = f.Close()
-	}()
-
-	scanner := bufio.NewScanner(f)
-
-	var results []string
-
-	for ; scanner.Scan(); {
-		results = append(results, scanner.Text())
-	}
-
-	err = scanner.Err()
-	if err != nil {
-		log.Fatalf("scanner error: %v", err)
-	}
-
-	return results
 }

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/dhawth/advent-of-go-2020/lib"
 )
 
 const (
@@ -40,7 +41,11 @@ func (p *passport) reset() {
 }
 
 func main() {
-	lines := getTheStuff()
+	lines, err := lib.ReadFile(inputFile)
+	if err != nil {
+		log.Fatalf("error reading file: %v", err)
+	}
+
 	validPassports := 0
 	var p passport
 
@@ -98,30 +103,4 @@ func main() {
 	}
 
 	fmt.Printf("We found %d valid passports\n", validPassports)
-}
-
-func getTheStuff() []string {
-	f, err := os.Open(inputFile)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-
-	defer func() {
-		_ = f.Close()
-	}()
-
-	scanner := bufio.NewScanner(f)
-
-	var results []string
-
-	for ; scanner.Scan(); {
-		results = append(results, scanner.Text())
-	}
-
-	err = scanner.Err()
-	if err != nil {
-		log.Fatalf("scanner error: %v", err)
-	}
-
-	return results
 }

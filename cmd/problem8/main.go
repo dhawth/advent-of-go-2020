@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -9,6 +8,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/dhawth/advent-of-go-2020/lib"
 )
 
 const (
@@ -16,8 +17,8 @@ const (
 )
 
 var (
-	hairColorRegex *regexp.Regexp
-	pidRegex       *regexp.Regexp
+	hclRegex *regexp.Regexp
+	pidRegex *regexp.Regexp
 )
 
 func init() {
@@ -26,7 +27,7 @@ func init() {
 		log.Fatalf("error compiling regex: %v\n", err)
 	}
 
-	hairColorRegex = re
+	hclRegex = re
 
 	re2, err := regexp.Compile("^[0-9]{9}$")
 	if err != nil {
@@ -110,7 +111,7 @@ func (p *passport) isValid() bool {
 		return false
 	}
 
-	return hairColorRegex.MatchString(p.Hcl) && pidRegex.MatchString(p.Pid)
+	return hclRegex.MatchString(p.Hcl) && pidRegex.MatchString(p.Pid)
 }
 
 func (p *passport) reset() {
@@ -125,7 +126,11 @@ func (p *passport) reset() {
 }
 
 func main() {
-	lines := getTheStuff()
+	lines, err := lib.ReadFile(inputFile)
+	if err != nil {
+		log.Fatalf("error reading file: %v", err)
+	}
+
 	validPassports := 0
 	var p passport
 
@@ -185,28 +190,3 @@ func main() {
 	fmt.Printf("We found %d valid passports\n", validPassports)
 }
 
-func getTheStuff() []string {
-	f, err := os.Open(inputFile)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-
-	defer func() {
-		_ = f.Close()
-	}()
-
-	scanner := bufio.NewScanner(f)
-
-	var results []string
-
-	for ; scanner.Scan(); {
-		results = append(results, scanner.Text())
-	}
-
-	err = scanner.Err()
-	if err != nil {
-		log.Fatalf("scanner error: %v", err)
-	}
-
-	return results
-}

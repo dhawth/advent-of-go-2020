@@ -1,10 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"github.com/dhawth/advent-of-go-2020/lib"
 	"log"
-	"os"
 )
 
 const (
@@ -40,7 +39,11 @@ func main() {
 		},
 	}
 
-	lines := getTheStuff()
+	lines, err := lib.ReadFile(inputFile)
+	if err != nil {
+		log.Fatalf("error reading file: %v", err)
+	}
+
 	var treeCounts []int
 
 	for _, s := range slopes {
@@ -76,30 +79,4 @@ func main() {
 
 func recalculateIndex(s string, n int) int {
 	return n % len(s)
-}
-
-func getTheStuff() []string {
-	f, err := os.Open(inputFile)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-
-	defer func() {
-		_ = f.Close()
-	}()
-
-	scanner := bufio.NewScanner(f)
-
-	var results []string
-
-	for ; scanner.Scan(); {
-		results = append(results, scanner.Text())
-	}
-
-	err = scanner.Err()
-	if err != nil {
-		log.Fatalf("scanner error: %v", err)
-	}
-
-	return results
 }

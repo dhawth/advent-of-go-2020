@@ -1,11 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
-	"os"
-	"strconv"
+
+	"github.com/dhawth/advent-of-go-2020/lib"
 )
 
 const (
@@ -13,15 +12,18 @@ const (
 )
 
 func main() {
-	lines := getTheStuff()
+	lines, err := lib.ReadFile(inputFile)
+	if err != nil {
+		log.Fatalf("error reading file: %v", err)
+	}
+
+	numbers, err := lib.ConvertStringsToInts(lines)
+	if err != nil {
+		log.Fatal(err)
+	}
 	cards := map[int]int{}
 
-	for _, line := range lines {
-		n, err := strconv.Atoi(line)
-		if err != nil {
-			log.Fatalf("invalid number in input: %s: %v", i, err)
-		}
-
+	for _, n := range numbers {
 		if o, ok := cards[2020 - n]; ok {
 			fmt.Printf("%d * %d = %d\n", o, n, o * n)
 		}
@@ -30,28 +32,3 @@ func main() {
 	}
 }
 
-func getTheStuff() []string {
-	f, err := os.Open(inputFile)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-
-	defer func() {
-		_ = f.Close()
-	}()
-
-	scanner := bufio.NewScanner(f)
-
-	var results []string
-
-	for ; scanner.Scan(); {
-		results = append(results, scanner.Text())
-	}
-
-	err = scanner.Err()
-	if err != nil {
-		log.Fatalf("scanner error: %v", err)
-	}
-
-	return results
-}
