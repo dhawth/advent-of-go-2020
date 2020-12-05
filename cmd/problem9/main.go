@@ -40,6 +40,7 @@ func main() {
 	}
 
 	maxSeatID := int64(0)
+	filledSeats := map[int64]struct{}{}
 
 	for _, line := range lines {
 		s := strings.ReplaceAll(line, "F", "0")
@@ -55,8 +56,30 @@ func main() {
 		if v > maxSeatID {
 			maxSeatID = v
 		}
+
+		filledSeats[v] = struct{}{}
 	}
 
+	row := 0
+	fmt.Print("row:")
+
+	for i := int64(0); i < 1024; i++ {
+		if i % 8 == 0 {
+			fmt.Println()
+			row++
+			fmt.Printf("%03d:  ", row)
+		}
+
+		_, isFilled := filledSeats[i]
+
+		if isFilled {
+			fmt.Print("X")
+		} else {
+			fmt.Print("O")
+		}
+	}
+
+	fmt.Println()
 	fmt.Printf("The maximum seatID is %d\n", maxSeatID)
 }
 
