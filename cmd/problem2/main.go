@@ -13,7 +13,8 @@ const (
 )
 
 func main() {
-	cards := getTheStuff()
+	lines := getTheStuff()
+	cards := convertToInts(lines)
 
 	for i := 0; i < len(cards); i++ {
 		for j := i + 1; j < len(cards); j++ {
@@ -27,7 +28,20 @@ func main() {
 	}
 }
 
-func getTheStuff() []int {
+func convertToInts(lines []string) []int {
+	var results []int
+	for _, line := range lines {
+		n, err := strconv.Atoi(line)
+		if err != nil {
+			log.Fatalf("error converting %s to int: %v", line, err)
+		}
+		results = append(results, n)
+	}
+
+	return results
+}
+
+func getTheStuff() []string {
 	f, err := os.Open(inputFile)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
@@ -39,16 +53,10 @@ func getTheStuff() []int {
 
 	scanner := bufio.NewScanner(f)
 
-	var cards []int
+	var results []string
 
 	for ; scanner.Scan(); {
-		i := scanner.Text()
-		n, err := strconv.Atoi(i)
-		if err != nil {
-			log.Fatalf("invalid number in input: %s: %v", i, err)
-		}
-
-		cards = append(cards, n)
+		results = append(results, scanner.Text())
 	}
 
 	err = scanner.Err()
@@ -56,5 +64,5 @@ func getTheStuff() []int {
 		log.Fatalf("scanner error: %v", err)
 	}
 
-	return cards
+	return results
 }
