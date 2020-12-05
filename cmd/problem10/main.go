@@ -14,7 +14,7 @@ const (
 
 func main() {
 	lines := getTheStuff()
-	seats := map[int]struct{}{}
+	seats := [1024]int{}
 
 	for _, line := range lines {
 		s := strings.ReplaceAll(line, "F", "0")
@@ -27,19 +27,18 @@ func main() {
 			log.Fatalf("error converting %s to number: %v", s, err)
 		}
 
-		seats[int(v)] = struct{}{}
+		seats[int(v)] = 1
 	}
 
 	for i := int(1); i < 1023; i++ {
-		_, hasSeat := seats[i]
-		if hasSeat {
+		if seats[i] == 1 {
+			// seat is filled
 			continue
 		}
 
-		_, hasBeforeSeat := seats[i-1]
-		_, hasAfterSeat := seats[i+1]
-
-		if !hasBeforeSeat || !hasAfterSeat {
+		if seats[i-1] == 0 || seats[i+1] == 0 {
+			// one of the surrounding seats is not filled, and we know we're sitting between two filled seats
+			// so this unfilled seat can't be the right one.
 			continue
 		}
 
