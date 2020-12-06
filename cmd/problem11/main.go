@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/dhawth/advent-of-go-2020/lib"
 	"log"
+
+	"github.com/dhawth/advent-of-go-2020/lib"
 )
 
 const (
