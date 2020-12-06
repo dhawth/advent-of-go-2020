@@ -18,10 +18,14 @@ func main() {
 		log.Fatalf("error reading file: %v", err)
 	}
 
-	seats := [1024]int{}
+	emptySeats := map[int]struct{}{}
 
-	for _, line := range lines {
-		s := strings.ReplaceAll(line, "F", "0")
+	for i := int(0); i < 1024; i++ {
+		emptySeats[i] = struct{}{}
+	}
+
+	for _, s := range lines {
+		s = strings.ReplaceAll(s, "F", "0")
 		s = strings.ReplaceAll(s, "B", "1")
 		s = strings.ReplaceAll(s, "L", "0")
 		s = strings.ReplaceAll(s, "R", "1")
@@ -31,18 +35,14 @@ func main() {
 			log.Fatalf("error converting %s to number: %v", s, err)
 		}
 
-		seats[int(v)] = 1
+		delete(emptySeats, int(v))
 	}
 
-	for i := int(1); i < 1023; i++ {
-		if seats[i] == 1 {
-			// seat is filled
-			continue
-		}
+	for i := range emptySeats {
+		_, beforeSeatIsEmpty := emptySeats[i-1]
+		_, afterSeatIsEmpty := emptySeats[i+1]
 
-		if seats[i-1] == 0 || seats[i+1] == 0 {
-			// one of the surrounding seats is not filled, and we know we're sitting between two filled seats
-			// so this unfilled seat can't be the right one.
+		if beforeSeatIsEmpty || afterSeatIsEmpty {
 			continue
 		}
 
