@@ -16,13 +16,12 @@ func main() {
 		log.Fatalf("error reading file: %v", err)
 	}
 
-	var groups []map[rune]struct{}
-
+	total := 0
 	v := map[rune]struct{}{}
 
 	for _, line := range lines {
 		if line == "" {
-			groups = append(groups, v)
+			total += len(v)
 			v = map[rune]struct{}{}
 			continue
 		}
@@ -32,14 +31,7 @@ func main() {
 		}
 	}
 
-	groups = append(groups, v)
-	total := 0
-
-	for _, m := range groups {
-		total += len(m)
-
-	}
+	total += len(v)
 
 	log.Printf("Total: %d", total)
 }
-
