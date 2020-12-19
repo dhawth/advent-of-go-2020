@@ -106,6 +106,11 @@ func NewUniqueIntQueue() *uniqueIntQueueImpl {
 	}
 }
 
+func (q uniqueIntQueueImpl) Contains(v int) bool {
+	_, ok := q.ints[v]
+	return ok
+}
+
 func (q *uniqueIntQueueImpl) Clear() {
 	q.q = list.New()
 	q.ints = map[int]struct{}{}
@@ -157,6 +162,11 @@ func (q *uniqueIntQueueImpl) IsEmpty() bool {
 
 func (q *uniqueIntQueueImpl) Len() int {
 	return q.q.Len()
+}
+
+// Head exposes the underlying implementation but is super useful for iterating in place
+func (q uniqueIntQueueImpl) Head() *list.Element {
+	return q.q.Front()
 }
 
 func (q *uniqueIntQueueImpl) MarshalJSON() ([]byte, error) {
