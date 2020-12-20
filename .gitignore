@@ -1,4 +1,4 @@
-**/input.txt
+**/input*.txt
 cmd/problem*/problem*
 .idea
 .DS_Store
